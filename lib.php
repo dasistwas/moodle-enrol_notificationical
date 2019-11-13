@@ -19,7 +19,7 @@
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
@@ -32,12 +32,12 @@ require_once($CFG->dirroot . '/lib/moodlelib.php');
 /**
  * Lib class
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
-class enrol_notificationeabc_plugin extends enrol_plugin
+class enrol_notificationical_plugin extends enrol_plugin
 {
     /** @var log.*/
     private $log = '';
@@ -56,9 +56,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         $course->url = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
 
-        $enrol = $DB->get_record('enrol', array('enrol' => 'notificationeabc', 'courseid' => $course->id, 'status' => 0));
+        $enrol = $DB->get_record('enrol', array('enrol' => 'notificationical', 'courseid' => $course->id, 'status' => 0));
 
-        $pluginconfig = get_config('enrol_notificationeabc');
+        $pluginconfig = get_config('enrol_notificationical');
         $enrolalert = $pluginconfig->enrolalert;
         $globalenrolalert = $pluginconfig->globalenrolalert;
 
@@ -70,17 +70,17 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         if (!$enrolmessage = $enrol->customtext1) { // Corse level.
             if (!$enrolmessage = $pluginconfig->enrolmessage) { // Plugin level.
-                $enrolmessage = get_string('enrolmessagedefault', 'enrol_notificationeabc', $course);
+                $enrolmessage = get_string('enrolmessagedefault', 'enrol_notificationical', $course);
             }
         }
         if (!$unenrolmessage = $enrol->customtext2) { // Corse level.
             if (!$unenrolmessage = $pluginconfig->unenrolmessage) { // Plugin level.
-                $unenrolmessage = get_string('unenrolmessagedefault', 'enrol_notificationeabc', $course);
+                $unenrolmessage = get_string('unenrolmessagedefault', 'enrol_notificationical', $course);
             }
         }
         if (!$enrolupdatemessage = $enrol->customtext3) { // Corse level.
             if (!$enrolupdatemessage = $pluginconfig->enrolupdatemessage) { // Plugin level.
-                $enrolupdatemessage = get_string('enrolupdatemessagedefault', 'enrol_notificationeabc', $course);
+                $enrolupdatemessage = get_string('enrolupdatemessagedefault', 'enrol_notificationical', $course);
             }
         }
 
@@ -103,31 +103,57 @@ class enrol_notificationeabc_plugin extends enrol_plugin
             default:
                 break;
         }
+        $summary = "test";
+        $description = "test";
+        $location = "test";
 
         $supportuser = \core_user::get_support_user();
+
+        $ical = $this->get_ical_attachment($user, $course, $supportuser, $summary, $description, $location);
+        $attachmenttext = $ical->get_attachment();
+        $attachname = $ical->get_name();
 
         $eventdata = new \core\message\message();
         $eventdata->courseid = $course->id;
         $eventdata->modulename = 'moodle';
-        $eventdata->component = 'enrol_notificationeabc';
-        $eventdata->name = 'notificationeabc_enrolment';
+        $eventdata->component = 'enrol_notificationical';
+        $eventdata->name = 'notificationical_enrolment';
         $eventdata->userfrom = $supportuser;
         $eventdata->userto = $user->id;
-        $eventdata->subject = get_string('subject', 'enrol_notificationeabc');
+        $eventdata->subject = get_string('subject', 'enrol_notificationical');
         $eventdata->fullmessage = '';
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml = $message;
         $eventdata->smallmessage = '';
+        $eventdata->attachment = $attachment;
+        $eventdata->attachname = $attachname;
+
+        $usercontext = context_user::instance($user->id);
+        $file = new stdClass;
+        $file->contextid = $usercontext->id;
+        $file->component = 'user';
+        $file->filearea  = 'private';
+        $file->itemid    = 0;
+        $file->filepath  = $CFG->tempdir . '/' . $this->tempfilename;
+        $file->filename  = $attachname;
+        $file->source    = 'test';
+
+        $fs = get_file_storage();
+        $file = $fs->create_file_from_string($file, $attachmenttext);
+        $eventdata->attachment = $file;
+
+
         $strdata = new stdClass();
         $strdata->username = $user->username;
         $strdata->coursename = $course->fullname;
         if (message_send($eventdata)) {
-            $this->log .= get_string('succefullsend', 'enrol_notificationeabc', $strdata);
+            $this->log .= get_string('succefullsend', 'enrol_notificationical', $strdata);
             return true;
         } else {
-            $this->log .= get_string('failsend', 'enrol_notificationeabc', $strdata);
+            $this->log .= get_string('failsend', 'enrol_notificationical', $strdata);
             return false;
         }
+
     } // End of function.
 
     // Procesa el mensaje para aceptar marcadores.
@@ -151,8 +177,16 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         return $m;
     }
-
-
+    /**
+     * Get ical attachment
+     *
+     * @param int $courseid
+     * @return \enrol_notificationical\ical
+    */
+    public function get_ical_attachment($user, $course, $userfrom, $summary, $description, $location){
+        $ical = new \enrol_notificationical\ical($user, $course, $userfrom, $summary, $description, $location);
+        return $ical;
+    }
     /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
      * @param int $courseid
@@ -161,14 +195,14 @@ class enrol_notificationeabc_plugin extends enrol_plugin
     public function get_newinstance_link($courseid) {
         global $DB;
 
-        $numenrol = $DB->count_records('enrol', array('courseid' => $courseid, 'enrol' => 'notificationeabc'));
+        $numenrol = $DB->count_records('enrol', array('courseid' => $courseid, 'enrol' => 'notificationical'));
         $context = context_course::instance($courseid, MUST_EXIST);
 
-        if (!has_capability('enrol/notificationeabc:manage', $context) or $numenrol >= 1) {
+        if (!has_capability('enrol/notificationical:manage', $context) or $numenrol >= 1) {
             return null;
         }
 
-        return new moodle_url('/enrol/notificationeabc/edit.php', array('courseid' => $courseid));
+        return new moodle_url('/enrol/notificationical/edit.php', array('courseid' => $courseid));
     }
 
 
@@ -203,10 +237,10 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         $icons = array();
 
-        if (has_capability('enrol/notificationeabc:manage', $context)) {
+        if (has_capability('enrol/notificationical:manage', $context)) {
             $editlink = new moodle_url(
                 '/enrol/editinstance.php',
-                array('courseid' => $instance->courseid, 'id' => $instance->id, 'type' => 'notificationeabc')
+                array('courseid' => $instance->courseid, 'id' => $instance->id, 'type' => 'notificationical')
             );
             $icons[] = $OUTPUT->action_icon(
                 $editlink,
@@ -225,7 +259,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
      */
     public function can_delete_instance($instance) {
         $context = context_course::instance($instance->courseid);
-        if (!has_capability('enrol/notificationeabc:manage', $context)) {
+        if (!has_capability('enrol/notificationical:manage', $context)) {
             return false;
         }
 
@@ -240,7 +274,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
      */
     public function can_hide_show_instance($instance) {
         $context = context_course::instance($instance->courseid);
-        return has_capability('enrol/notificationeabc:config', $context);
+        return has_capability('enrol/notificationical:config', $context);
     }
 
     /**
@@ -250,7 +284,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
      */
     public function get_info_icons(array $instances) {
         $icons = array();
-        $icons[] = new pix_icon('email', get_string('pluginname', 'enrol_notificationeabc'), 'enrol_notificationeabc');
+        $icons[] = new pix_icon('email', get_string('pluginname', 'enrol_notificationical'), 'enrol_notificationical');
         return $icons;
     }
 
@@ -288,42 +322,42 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'));
         $mform->setType('name', PARAM_RAW);
-        $mform->setDefault('name', get_string('pluginname', 'enrol_notificationeabc'));
+        $mform->setDefault('name', get_string('pluginname', 'enrol_notificationical'));
 
         $options = $this->get_status_options();
-        $mform->addElement('select', 'status', get_string('status', 'enrol_notificationeabc'), $options);
+        $mform->addElement('select', 'status', get_string('status', 'enrol_notificationical'), $options);
         $mform->setDefault('status', $this->get_config('status'));
 
         // Enrol notifications -> 'enrolalert'.
-        $mform->addElement('advcheckbox', 'customint1', get_string('enrolalert', 'enrol_notificationeabc'));
-        $mform->addHelpButton('customint1', 'enrolalert', 'enrol_notificationeabc');
+        $mform->addElement('advcheckbox', 'customint1', get_string('enrolalert', 'enrol_notificationical'));
+        $mform->addHelpButton('customint1', 'enrolalert', 'enrol_notificationical');
         $mform->setDefault('customint1', $this->get_config('enrolalert'));
 
         // Enrol notifications -> 'enrolmessage'
-        $mform->addElement('textarea', 'customtext1', get_string('enrolmessage', 'enrol_notificationeabc'), $textareaparams);
-        $mform->addHelpButton('customtext1', 'enrolmessage', 'enrol_notificationeabc');
+        $mform->addElement('textarea', 'customtext1', get_string('enrolmessage', 'enrol_notificationical'), $textareaparams);
+        $mform->addHelpButton('customtext1', 'enrolmessage', 'enrol_notificationical');
         $mform->setType('customtext1', PARAM_RAW);
         $mform->setDefault('customtext1', $this->get_config('enrolmessage'));
 
         // Unenrol notifications -> 'unenrolalert'.
-        $mform->addElement('advcheckbox', 'customint2', get_string('unenrolalert', 'enrol_notificationeabc'));
-        $mform->addHelpButton('customint2', 'unenrolalert', 'enrol_notificationeabc');
+        $mform->addElement('advcheckbox', 'customint2', get_string('unenrolalert', 'enrol_notificationical'));
+        $mform->addHelpButton('customint2', 'unenrolalert', 'enrol_notificationical');
         $mform->setDefault('customint2', $this->get_config('unenrolalert'));
 
         // Unenrol notifications -> 'unenrolmessage'.
-        $mform->addElement('textarea', 'customtext2', get_string('unenrolmessage', 'enrol_notificationeabc'), $textareaparams);
-        $mform->addHelpButton('customtext2', 'unenrolmessage', 'enrol_notificationeabc');
+        $mform->addElement('textarea', 'customtext2', get_string('unenrolmessage', 'enrol_notificationical'), $textareaparams);
+        $mform->addHelpButton('customtext2', 'unenrolmessage', 'enrol_notificationical');
         $mform->setType('customtext2', PARAM_RAW);
         $mform->setDefault('customtext2', $this->get_config('unenrolmessage'));
 
         // Update enrolment notifications -> 'enrolupdatealert'.
-        $mform->addElement('advcheckbox', 'customint3', get_string('enrolupdatealert', 'enrol_notificationeabc'));
-        $mform->addHelpButton('customint3', 'enrolupdatealert', 'enrol_notificationeabc');
+        $mform->addElement('advcheckbox', 'customint3', get_string('enrolupdatealert', 'enrol_notificationical'));
+        $mform->addHelpButton('customint3', 'enrolupdatealert', 'enrol_notificationical');
         $mform->setDefault('customint3', $this->get_config('enrolupdatealert'));
 
         // Update enrolment -> 'enrolupdatemessage'.
-        $mform->addElement('textarea', 'customtext3', get_string('enrolupdatemessage', 'enrol_notificationeabc'), $textareaparams);
-        $mform->addHelpButton('customtext3', 'enrolupdatemessage', 'enrol_notificationeabc');
+        $mform->addElement('textarea', 'customtext3', get_string('enrolupdatemessage', 'enrol_notificationical'), $textareaparams);
+        $mform->addHelpButton('customtext3', 'enrolupdatemessage', 'enrol_notificationical');
         $mform->setType('customtext3', PARAM_RAW);
         $mform->setDefault('customtext3', $this->get_config('enrolupdatemessage'));
 

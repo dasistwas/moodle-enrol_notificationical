@@ -19,7 +19,7 @@
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
@@ -27,8 +27,8 @@
 
 $string['enrolmessagedefault'] = 'Ud ha sido matriculado en el curso {$a->fullname} ({$a->url})';
 $string['enrolmessage'] = 'Mensaje personalizado';
-$string['messageprovider:notificationeabc_enrolment'] = 'Enrol notification messages';
-$string['notificationeabc:manage'] = 'Gestionar notificaciones de matriculación';
+$string['messageprovider:notificationical_enrolment'] = 'Enrol notification messages';
+$string['notificationical:manage'] = 'Gestionar notificaciones de matriculación';
 $string['pluginname'] = 'Notificación de Matriculación';
 $string['enrolmessage_help'] = 'Personalice el mensaje que le llegará a los usuarios al ser matriculados. Este campo acepta los siguientes marcadores que luego seran reemplazados dinámicamente por los valores correspondientes
 <pre>

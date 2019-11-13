@@ -19,7 +19,7 @@
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
@@ -28,8 +28,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    /* Manage user notificationeabc-enrolments. */
-    'enrol/notificationeabc:manage' => array(
+    /* Manage user notificationical-enrolments. */
+    'enrol/notificationical:manage' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -38,7 +38,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW,
         )
     ),
-    'enrol/notificationeabc:config' => array(
+    'enrol/notificationical:config' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

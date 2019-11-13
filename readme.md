@@ -1,4 +1,4 @@
-# Notificationeabc plugin
+# Notificationical plugin
 
 Send notifications to users when any enrolment event is executed
 

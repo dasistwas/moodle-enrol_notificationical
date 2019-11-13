@@ -19,24 +19,24 @@
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/enrol/notificationeabc/lib.php');
+require_once($CFG->dirroot . '/enrol/notificationical/lib.php');
 
 /**
  * Observer definition
  *
- * @package    enrol_notificationeabc
+ * @package    enrol_notificationical
  * @copyright  2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
-class enrol_notificationeabc_observer
+class enrol_notificationical_observer
 {
 
     /**
@@ -51,7 +51,7 @@ class enrol_notificationeabc_observer
         $enableplugins = explode(',', $enableplugins);
         $enabled = false;
         foreach ($enableplugins as $enableplugin) {
-            if ($enableplugin === 'notificationeabc') {
+            if ($enableplugin === 'notificationical') {
                 $enabled = true;
             }
         }
@@ -59,12 +59,12 @@ class enrol_notificationeabc_observer
             $user = $DB->get_record('user', array('id' => $event->relateduserid));
             $course = $DB->get_record('course', array('id' => $event->courseid));
 
-            $notificationeabc = new enrol_notificationeabc_plugin();
+            $notificationical = new enrol_notificationical_plugin();
 
-            $activeglobal = $notificationeabc->get_config('globalunenrolalert');
-            $unenrolalert = $notificationeabc->get_config('unenrolalert');
+            $activeglobal = $notificationical->get_config('globalunenrolalert');
+            $unenrolalert = $notificationical->get_config('unenrolalert');
 
-            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationeabc', 'courseid' => $event->courseid));
+            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationical', 'courseid' => $event->courseid));
 
             /*
             * check the instance status
@@ -78,9 +78,9 @@ class enrol_notificationeabc_observer
             }
 
             if ($activeglobal == 1 && $unenrolalert == 1) {
-                $notificationeabc->send_email($user, $course, 2);
+                $notificationical->send_email($user, $course, 2);
             } else if (!empty($enrol) && !empty($unenrolalert) && $instanceenabled) {
-                $notificationeabc->send_email($user, $course, 2);
+                $notificationical->send_email($user, $course, 2);
             }
         }
     }
@@ -97,7 +97,7 @@ class enrol_notificationeabc_observer
         $enableplugins = explode(',', $enableplugins);
         $enabled = false;
         foreach ($enableplugins as $enableplugin) {
-            if ($enableplugin === 'notificationeabc') {
+            if ($enableplugin === 'notificationical') {
                 $enabled = true;
             }
         }
@@ -105,13 +105,13 @@ class enrol_notificationeabc_observer
             $user = $DB->get_record('user', array('id' => $event->relateduserid));
             $course = $DB->get_record('course', array('id' => $event->courseid));
 
-            $notificationeabc = new enrol_notificationeabc_plugin();
+            $notificationical = new enrol_notificationical_plugin();
 
-            $activeglobal = $notificationeabc->get_config('globalenrolupdatealert');
-            $enrolupdatealert = $notificationeabc->get_config('enrolupdatealert');
+            $activeglobal = $notificationical->get_config('globalenrolupdatealert');
+            $enrolupdatealert = $notificationical->get_config('enrolupdatealert');
 
             // Plugin instance in course.
-            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationeabc', 'courseid' => $event->courseid));
+            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationical', 'courseid' => $event->courseid));
 
             /*
             * check the instance status
@@ -125,9 +125,9 @@ class enrol_notificationeabc_observer
             }
 
             if ($activeglobal == 1 && $enrolupdatealert == 1) {
-                $notificationeabc->send_email($user, $course, 3);
+                $notificationical->send_email($user, $course, 3);
             } else if (!empty($enrol) && !empty($enrolupdatealert) && $instanceenabled) {
-                $notificationeabc->send_email($user, $course, 3);
+                $notificationical->send_email($user, $course, 3);
             }
         }
     }
@@ -144,7 +144,7 @@ class enrol_notificationeabc_observer
         $enableplugins = explode(',', $enableplugins);
         $enabled = false;
         foreach ($enableplugins as $enableplugin) {
-            if ($enableplugin === 'notificationeabc') {
+            if ($enableplugin === 'notificationical') {
                 $enabled = true;
             }
         }
@@ -153,12 +153,12 @@ class enrol_notificationeabc_observer
             $user = $DB->get_record('user', array('id' => $event->relateduserid));
             $course = $DB->get_record('course', array('id' => $event->courseid));
 
-            $notificationeabc = new enrol_notificationeabc_plugin();
+            $notificationical = new enrol_notificationical_plugin();
 
-            $activeglobal = $notificationeabc->get_config('globalenrolalert');
-            $enrolalert = $notificationeabc->get_config('enrolalert');
+            $activeglobal = $notificationical->get_config('globalenrolalert');
+            $enrolalert = $notificationical->get_config('enrolalert');
 
-            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationeabc', 'courseid' => $event->courseid));
+            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationical', 'courseid' => $event->courseid));
 
             // Check the instance status.
             // Legend: status = 0 enabled; status = 1 disabled.
@@ -170,9 +170,9 @@ class enrol_notificationeabc_observer
             }
 
             if ($activeglobal == 1 && $enrolalert == 1) {
-                $notificationeabc->send_email($user, $course, 1);
+                $notificationical->send_email($user, $course, 1);
             } else if (!empty($enrol) && !empty($enrolalert) && $instanceenabled) {
-                $notificationeabc->send_email($user, $course, 1);
+                $notificationical->send_email($user, $course, 1);
             }
         }
     }
