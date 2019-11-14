@@ -61,10 +61,10 @@ class enrol_notificationical_plugin extends enrol_plugin
         $pluginconfig = get_config('enrol_notificationical');
         $enrolalert = $pluginconfig->enrolalert;
         $globalenrolalert = $pluginconfig->globalenrolalert;
-
         $unenrolalert = $pluginconfig->unenrolalert;
         $globalunenrolalert = $pluginconfig->globalunenrolalert;
-
+        $cancel = false;
+        $subject = get_string('subject', 'enrol_notificationical');
         $enrolupdatealert = $pluginconfig->enrolupdatealert;
         $globalenrolupdatealert = $pluginconfig->globalenrolupdatealert;
 
@@ -88,11 +88,15 @@ class enrol_notificationical_plugin extends enrol_plugin
             case 1:
                 if (!empty($enrolalert) || !empty($globalenrolalert)) {
                     $message = $this->get_message($enrolmessage, $user, $course);
+                    $cancel = false;
+                    $subject = "Enrol notification";
                 }
                 break;
             case 2:
                 if (!empty($unenrolalert) || !empty($globalunenrolalert)) {
                     $message = $this->get_message($unenrolmessage, $user, $course);
+                    $cancel = true;
+                    $subject = "Unenrol notification";
                 }
                 break;
             case 3:
@@ -103,15 +107,15 @@ class enrol_notificationical_plugin extends enrol_plugin
             default:
                 break;
         }
-        $summary = "test";
-        $description = "test";
-        $location = "test";
+        $summary = '';
+        $description = '';
+        $location = '';
 
         $supportuser = \core_user::get_support_user();
 
         $ical = $this->get_ical_attachment($user, $course, $supportuser, $summary, $description, $location);
-        $attachmenttext = $ical->get_attachment();
-        $attachname = $ical->get_name();
+        $attachmenttext = $ical->get_attachment($cancel);
+        $attachname = md5(microtime().$user->id).$ical->get_name();
 
         $eventdata = new \core\message\message();
         $eventdata->courseid = $course->id;
@@ -120,26 +124,26 @@ class enrol_notificationical_plugin extends enrol_plugin
         $eventdata->name = 'notificationical_enrolment';
         $eventdata->userfrom = $supportuser;
         $eventdata->userto = $user->id;
-        $eventdata->subject = get_string('subject', 'enrol_notificationical');
+        $eventdata->subject = $subject;
         $eventdata->fullmessage = '';
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml = $message;
         $eventdata->smallmessage = '';
-        $eventdata->attachment = $attachment;
         $eventdata->attachname = $attachname;
+        $eventdata->timecreated = time();
 
         $usercontext = context_user::instance($user->id);
-        $file = new stdClass;
+        $file = new stdClass();
         $file->contextid = $usercontext->id;
         $file->component = 'user';
-        $file->filearea  = 'private';
-        $file->itemid    = 0;
-        $file->filepath  = $CFG->tempdir . '/' . $this->tempfilename;
+        $file->filearea  = 'attachment';
+        $file->itemid    = $user->id;
+        $file->filepath  = '/';
         $file->filename  = $attachname;
-        $file->source    = 'test';
 
         $fs = get_file_storage();
         $file = $fs->create_file_from_string($file, $attachmenttext);
+
         $eventdata->attachment = $file;
 
 
@@ -152,6 +156,9 @@ class enrol_notificationical_plugin extends enrol_plugin
         } else {
             $this->log .= get_string('failsend', 'enrol_notificationical', $strdata);
             return false;
+        }
+        if ($file) {
+            $file->delete();
         }
 
     } // End of function.
@@ -183,8 +190,8 @@ class enrol_notificationical_plugin extends enrol_plugin
      * @param int $courseid
      * @return \enrol_notificationical\ical
     */
-    public function get_ical_attachment($user, $course, $userfrom, $summary, $description, $location){
-        $ical = new \enrol_notificationical\ical($user, $course, $userfrom, $summary, $description, $location);
+    public function get_ical_attachment($user, $course, $userfrom, $summary, $description){
+        $ical = new \enrol_notificationical\ical($user, $course, $userfrom, $summary, $description);
         return $ical;
     }
     /**

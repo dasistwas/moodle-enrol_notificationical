@@ -66,12 +66,14 @@ class ical {
      * @param object $option the option that is being booked
      * @param object $user the user the booking is for
      */
-    public function __construct($user, $course, $userfrom, $summary, $description, $location) {
+    public function __construct($user, $course, $userfrom, $summary, $description) {
         global $DB, $CFG;
 
         $this->course = $course;
-        //$this->option = $option;
         $this->fromuser = $userfrom;
+        $this->location = $this->course->url;
+        $this->summary = $this->course->fullname;
+        $this->description = strip_tags($this->course->summary);
         // Check if start and end dates exist.
         // NOTE: Newlines are meant to be encoded with the literal sequence
         // '\n'. But evolution presents a single line text field for location,
@@ -83,8 +85,6 @@ class ical {
             // Date that this representation of the calendar information was created -
             // See http://www.kanzaki.com/docs/ical/dtstamp.html.
             $this->dtstamp = $this->generate_timestamp($this->course->timemodified);
-            $this->summary = $this->course->summary;
-            $this->description = $this->course->fullname;
             $urlbits = parse_url($CFG->wwwroot);
             $this->host = $urlbits['host'];
             $this->userfullname = \fullname($this->user);
@@ -134,8 +134,6 @@ EOF;
 
 
         $template = str_replace("\n", "\r\n", $template);
-        $this->tempfilename = md5($template . microtime());
-        $tempfilepathname = $CFG->tempdir . '/' . $this->tempfilename;
 
         return $template;
     }
@@ -164,14 +162,14 @@ EOF;
         $this->vevents .= <<<EOF
 BEGIN:VEVENT
 CLASS:PUBLIC
-DESCRIPTION:{$this->description}
+DESCRIPTION:{$this->summary}
 DTEND:{$dtend}
 DTSTAMP:{$this->dtstamp}
 DTSTART:{$dtstart}
 LOCATION:{$this->location}
 PRIORITY:5
 SEQUENCE:0
-SUMMARY:{$this->summary}
+SUMMARY:{$this->description}
 TRANSP:OPAQUE{$this->status}
 ORGANIZER;CN={$this->fromuser->email}:MAILTO:{$this->fromuser->email}
 ATTENDEE;CUTYPE=INDIVIDUAL;ROLE={$this->role};PARTSTAT=NEEDS-ACTION;RSVP=false;CN={$this->userfullname};LANGUAGE=en:MAILTO:{$this->user->email}
@@ -183,7 +181,7 @@ EOF;
     }
 
     public function get_name() {
-        return 'course.ics';
+        return '.ics';
     }
 
     protected function generate_timestamp($timestamp) {
