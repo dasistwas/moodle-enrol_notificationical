@@ -16,12 +16,13 @@
 
 
 /**
- * Notificationeabc enrolment plugin.
+ * Notificationical enrolment plugin.
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
+ * @copyright  2019 by Thomas Winkler, Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
