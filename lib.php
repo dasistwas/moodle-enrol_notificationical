@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Notificationeabc enrolment plugin.
+ * Notificationical enrolment plugin.
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
@@ -33,7 +33,8 @@ require_once($CFG->dirroot . '/lib/moodlelib.php');
  * Lib class
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
+ * @copyright  2019 by Thomas Winkler, Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
@@ -41,8 +42,6 @@ class enrol_notificationical_plugin extends enrol_plugin
 {
     /** @var log.*/
     private $log = '';
-
-    // Funcion que envia las notificaciones a los usuarios.
 
     /**
      * Send mail method
@@ -89,31 +88,30 @@ class enrol_notificationical_plugin extends enrol_plugin
                 if (!empty($enrolalert) || !empty($globalenrolalert)) {
                     $message = $this->get_message($enrolmessage, $user, $course);
                     $cancel = false;
-                    $subject = "Enrol notification";
+                    $subject = get_string('enrolsubject', 'enrol_notificationical');
                 }
                 break;
             case 2:
                 if (!empty($unenrolalert) || !empty($globalunenrolalert)) {
                     $message = $this->get_message($unenrolmessage, $user, $course);
                     $cancel = true;
-                    $subject = "Unenrol notification";
+                    $subject = get_string('unenrolsubject', 'enrol_notificationical');
                 }
                 break;
             case 3:
                 if (!empty($enrolupdatealert) || !empty($globalenrolupdatealert)) {
                     $message = $this->get_message($enrolupdatemessage, $user, $course);
+                    $cancel = false;
+                    $subject = get_string('enrolupdatedsubject', 'enrol_notificationical');
                 }
                 break;
             default:
                 break;
         }
-        $summary = '';
-        $description = '';
-        $location = '';
 
         $supportuser = \core_user::get_support_user();
 
-        $ical = $this->get_ical_attachment($user, $course, $supportuser, $summary, $description, $location);
+        $ical = $this->get_ical_attachment($user, $course, $supportuser, $subject);
         $attachmenttext = $ical->get_attachment($cancel);
         $attachname = md5(microtime().$user->id).$ical->get_name();
 
@@ -124,7 +122,7 @@ class enrol_notificationical_plugin extends enrol_plugin
         $eventdata->name = 'notificationical_enrolment';
         $eventdata->userfrom = $supportuser;
         $eventdata->userto = $user->id;
-        $eventdata->subject = $subject;
+        $eventdata->subject = $subject . $course->fullname;
         $eventdata->fullmessage = '';
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml = $message;
@@ -163,7 +161,6 @@ class enrol_notificationical_plugin extends enrol_plugin
 
     } // End of function.
 
-    // Procesa el mensaje para aceptar marcadores.
     /**
      * Proccess message method
      * @param String $message the raw message
@@ -190,8 +187,8 @@ class enrol_notificationical_plugin extends enrol_plugin
      * @param int $courseid
      * @return \enrol_notificationical\ical
     */
-    public function get_ical_attachment($user, $course, $userfrom, $summary, $description){
-        $ical = new \enrol_notificationical\ical($user, $course, $userfrom, $summary, $description);
+    public function get_ical_attachment($user, $course, $userfrom, $subject){
+        $ical = new \enrol_notificationical\ical($user, $course, $userfrom, $subject);
         return $ical;
     }
     /**

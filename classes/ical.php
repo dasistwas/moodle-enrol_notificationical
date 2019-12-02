@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Support class for generating ical items Note - this code is based on the ical code from mod_facetoface
  *
- * @package mod_booking
+ * @package enrol_notificationical
  * @copyright 2012-2017 Davo Smith, Synergy Learning, Andras Princic, David Bogner
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -58,6 +58,8 @@ class ical {
 
     protected $userfullname = '';
 
+    protected $subjectprefix = '';
+
 
     /**
      * Create a new mod_booking\ical instance
@@ -65,14 +67,16 @@ class ical {
      * @param object $booking the booking activity details
      * @param object $option the option that is being booked
      * @param object $user the user the booking is for
+     * @param string $subject The event type unenrol/enrol/enrolment update
      */
-    public function __construct($user, $course, $userfrom, $summary, $description) {
+    public function __construct($user, $course, $userfrom, $subject) {
         global $DB, $CFG;
 
+        $this->subjectprefix = $subject;
         $this->course = $course;
         $this->fromuser = $userfrom;
         $this->location = $this->course->url;
-        $this->summary = $this->course->fullname;
+        $this->summary = $this->subjectprefix . $this->course->fullname;
         $this->description = strip_tags($this->course->summary);
         // Check if start and end dates exist.
         // NOTE: Newlines are meant to be encoded with the literal sequence
@@ -162,14 +166,14 @@ EOF;
         $this->vevents .= <<<EOF
 BEGIN:VEVENT
 CLASS:PUBLIC
-DESCRIPTION:{$this->summary}
+DESCRIPTION:{$this->description}
 DTEND:{$dtend}
 DTSTAMP:{$this->dtstamp}
 DTSTART:{$dtstart}
 LOCATION:{$this->location}
 PRIORITY:5
 SEQUENCE:0
-SUMMARY:{$this->description}
+SUMMARY:{$this->summary}
 TRANSP:OPAQUE{$this->status}
 ORGANIZER;CN={$this->fromuser->email}:MAILTO:{$this->fromuser->email}
 ATTENDEE;CUTYPE=INDIVIDUAL;ROLE={$this->role};PARTSTAT=NEEDS-ACTION;RSVP=false;CN={$this->userfullname};LANGUAGE=en:MAILTO:{$this->user->email}

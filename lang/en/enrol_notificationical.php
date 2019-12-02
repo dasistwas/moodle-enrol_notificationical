@@ -15,29 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Notificationeabc enrolment plugin.
+ * Notificationical enrolment plugin.
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
+ * @copyright  2019 by Thomas Winkler, Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
 
-$string['activar_help'] = 'When activated will be verified by the immediate execution of cron later, users who were enrolled for the period specified above';
-$string['activar'] = 'Enable initial verification';
 $string['failsend'] = 'WARNING: it has no been able to notify the {$a->username} user about his enrollment in the {$a->coursename} course'."\n";
-$string['fecha_help'] = 'Place the period for which you want to perform the first virificación';
-$string['fecha'] = 'Period for verification of users enrolled courses';
 $string['messageprovider:notificationical_enrolment'] = 'Enrol email notification messages';
 $string['notificationical:config'] = 'Configure email notificationical instances';
 $string['notificationical:manage'] = 'Manage email notificationical';
 $string['pluginname'] = 'Enrol notification';
-$string['status'] = 'Active email notification';
+$string['status'] = 'Activate email notification';
 $string['subject'] = 'Course enrollment';
-$string['unenrolmailnotification'] = 'Unenrolled from course';
 $string['succefullsend'] = 'The user {$a->username} has been notified about his enrollment in the {$a->coursename} course'."\n";
+$string['enrolsubject'] = 'Course enrolment notification: ';
+$string['unenrolsubject'] = 'Course unenrolment notification: ';
+$string['enrolupdatedsubject'] = 'Course enrolment update notfication: ';
 
 // Enrol notifications.
 $string['enrolalert'] = 'Enable enrol message';
