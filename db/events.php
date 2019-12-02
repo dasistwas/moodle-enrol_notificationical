@@ -39,9 +39,12 @@ $observers = array(
         'callback'    => 'enrol_notificationical_observer::user_enrolled',
     ),
 
-    array(
+  /*  array(
         'eventname'   => '\core\event\user_enrolment_updated',
         'callback'    => 'enrol_notificationical_observer::user_updated',
+    ),*/
+    array(
+            'eventname'   => '\core\event\course_updated',
+            'callback'    => 'enrol_notificationical_observer::course_updated',
     )
-
 );

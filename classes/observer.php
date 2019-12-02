@@ -176,4 +176,53 @@ class enrol_notificationical_observer
             }
         }
     }
+
+    /**
+     * hook enrolment event
+     * @param \core\event\user_enrolment_created $event
+     */
+    public static function course_updated(\core\event\course_updated $event) {
+        global $DB;
+
+
+        // Validate plugin status in system context.
+        $enableplugins = get_config(null, 'enrol_plugins_enabled');
+        $enableplugins = explode(',', $enableplugins);
+        $enabled = false;
+        foreach ($enableplugins as $enableplugin) {
+            if ($enableplugin === 'notificationical') {
+                $enabled = true;
+            }
+        }
+
+        if ($enabled) {
+            $user = $DB->get_record('user', array('id' => $event->relateduserid));
+            $course = $DB->get_record('course', array('id' => $event->courseid));
+            $context = context_course::instance($event->courseid);
+            $users = get_enrolled_users($context);
+            $notificationical = new enrol_notificationical_plugin();
+
+            $activeglobal = $notificationical->get_config('globalenrolalert');
+            $enrolalert = $notificationical->get_config('enrolalert');
+
+            $enrol = $DB->get_record('enrol', array('enrol' => 'notificationical', 'courseid' => $event->courseid));
+
+            // Check the instance status.
+            // Legend: status = 0 enabled; status = 1 disabled.
+            $instanceenabled = false;
+            if (!empty($enrol)) {
+                if (!$enrol->status) {
+                    $instanceenabled = true;
+                }
+            }
+
+            foreach ($users as $user) {
+                if ($activeglobal == 1 && $enrolalert == 1) {
+                    $notificationical->send_email($user, $course, 3);
+                } else if (!empty($enrol) && !empty($enrolalert) && $instanceenabled) {
+                    $notificationical->send_email($user, $course, 3);
+                }
+            }
+        }
+    }
 }

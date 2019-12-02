@@ -44,6 +44,11 @@ class enrol_notificationical_plugin extends enrol_plugin
 
     // Funcion que envia las notificaciones a los usuarios.
 
+    public function send_to_all(stdClass $course, $type) {
+        global $CFG, $DB;
+
+
+    }
     /**
      * Send mail method
      * @param stdClass $user user instance
@@ -102,6 +107,8 @@ class enrol_notificationical_plugin extends enrol_plugin
             case 3:
                 if (!empty($enrolupdatealert) || !empty($globalenrolupdatealert)) {
                     $message = $this->get_message($enrolupdatemessage, $user, $course);
+                    $cancel = false;
+                    $subject = "Course Updated";
                 }
                 break;
             default:
