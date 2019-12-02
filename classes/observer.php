@@ -15,12 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Notificationeabc enrolment plugin.
+ * Notificationical enrolment plugin.
  *
  * This plugin notifies users when an event occurs on their enrolments (enrol, unenrol, update enrolment)
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
+ * @copyright  2019 by Thomas Winkler, Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
@@ -32,15 +33,16 @@ require_once($CFG->dirroot . '/enrol/notificationical/lib.php');
  * Observer definition
  *
  * @package    enrol_notificationical
- * @copyright  2017 e-ABC Learning
+ * @copyright  based on the work by 2017 e-ABC Learning
+ * @copyright  2019 by Thomas Winkler, Wunderbyte GmbH
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
-class enrol_notificationical_observer
-{
+class enrol_notificationical_observer {
 
     /**
      * hook enrol event
+     *
      * @param \core\event\user_enrolment_deleted $event
      */
     public static function user_unenrolled(\core\event\user_enrolment_deleted $event) {
@@ -87,9 +89,10 @@ class enrol_notificationical_observer
 
     /**
      * hook user update event
+     *
      * @param \core\event\user_enrolment_updated $event
      */
-    public static function user_updated(\core\event\user_enrolment_updated $event) {
+    public static function user_enrolment_updated(\core\event\user_enrolment_updated $event) {
         global $DB;
 
         // Validate plugin status in system context.
@@ -134,6 +137,7 @@ class enrol_notificationical_observer
 
     /**
      * hook enrolment event
+     *
      * @param \core\event\user_enrolment_created $event
      */
     public static function user_enrolled(\core\event\user_enrolment_created $event) {

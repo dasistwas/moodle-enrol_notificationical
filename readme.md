@@ -1,6 +1,6 @@
 # Notificationical plugin
 
-Send notifications to users when any enrolment event is executed
+Send notifications to users when any enrolment event is executed and attach ical with course start and end date.
 
 ## Installation
 
@@ -8,4 +8,4 @@ Send notifications to users when any enrolment event is executed
 2. Unzip the package inside enrol directory
 4. Go to Site administration-> notifications and press "Update database now"
 
-Compatible with moodle 3.2 and 3.3
+Compatible with Moodle 3.5 onwards.
