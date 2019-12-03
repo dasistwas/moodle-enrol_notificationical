@@ -182,12 +182,17 @@ class enrol_notificationical_plugin extends enrol_plugin
         global $CFG;
 
         $m = $message;
+        $startdate = date("d.m.y",  $course->startdate);
+        $enddate = date("d.m.y",  $course->enddate);
         $url = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $course->id));
         $m = str_replace('{COURSENAME}', $course->fullname, $m);
         $m = str_replace('{USERNAME}', $user->username, $m);
         $m = str_replace('{FIRSTNAME}', $user->firstname, $m);
         $m = str_replace('{LASTNAME}', $user->lastname, $m);
         $m = str_replace('{URL}', $url, $m);
+        $m = str_replace('{STARTTIME}', $startdate, $m );
+        $m = str_replace('{ENDTIME}', $enddate, $m );
+
 
         return $m;
     }

@@ -51,6 +51,8 @@ $string['enrolmessage_help'] = 'Personalize the message that users will come to 
 {FIRSTNAME} = firstname
 {LASTNAME} = lastname
 {URL} = course url
+{STARTTIME} = course start
+{ENDTIME} = course end
 </pre>';
 $string['enrolmessagedefault'] = 'You have been enrolled in {$a->fullname} ({$a->url})';
 
@@ -67,6 +69,8 @@ $string['unenrolmessage_help'] = 'Personalize the message that users will come t
 {FIRSTNAME} = firstname
 {LASTNAME} = lastname
 {URL} = course url
+{STARTTIME} = course start
+{ENDTIME} = course end
 </pre>';
 $string['unenrolmessagedefault'] = 'You have been unenrolled from {$a->fullname} ({$a->url})';
 
@@ -83,5 +87,7 @@ $string['enrolupdatemessage_help'] = 'Personalize the message that users will co
 {FIRSTNAME} = firstname
 {LASTNAME} = lastname
 {URL} = course url
+{STARTTIME} = course start
+{ENDTIME} = course end
 </pre>';
 $string['enrolupdatemessagedefault'] = 'Your enrolment to {$a->fullname} has been updated ({$a->url})';

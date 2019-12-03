@@ -51,6 +51,8 @@ $string['enrolmessage_help'] = 'Personalisieren Sie die Nachricht, für Anmeldeb
 {FIRSTNAME} = Vorname
 {LASTNAME} = Nachname
 {URL} = Kurs-URL
+{STARTTIME} = Kursstart
+{ENDTIME} = Kursende
 </pre>';
 $string['enrolmessagedefault'] = 'Sie wurden in {$a->fullname} ({$a->url}) eingeschrieben';
 
@@ -67,6 +69,8 @@ $string['unenrolmessage_help'] = 'Personalisieren Sie die Nachricht, für Abmeld
 {FIRSTNAME} = Vorname
 {LASTNAME} = Nachname
 {URL} = Kurs-URL
+{STARTTIME} = Kursstart
+{ENDTIME} = Kursende
 </pre>';
 $string['unenrolmessagedefault'] = 'Wie wurden von {$a->fullname} ({$a->url}) abgemeldet';
 
@@ -83,5 +87,7 @@ $string['enrolupdatemessage_help'] = 'Personalisieren Sie die Nachricht, für Ku
 {FIRSTNAME} = Vorname
 {LASTNAME} = Nachname
 {URL} = Kurs-URL
+{STARTTIME} = Kursstart
+{ENDTIME} = Kursende
 </pre>';
 $string['enrolupdatemessagedefault'] = 'Ihre Anmeldung zu {$a->fullname} wurde aktualisiert ({$a->url})';
