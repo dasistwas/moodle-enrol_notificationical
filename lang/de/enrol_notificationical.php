@@ -69,8 +69,8 @@ $string['unenrolmessage_help'] = 'Personalisieren Sie die Nachricht, für Abmeld
 {FIRSTNAME} = Vorname
 {LASTNAME} = Nachname
 {URL} = Kurs-URL
-{STARTTIME} = Kursstart
-{ENDTIME} = Kursende
+{STARTTIME} = Kursstartzeit
+{ENDTIME} = Kursendzeit
 </pre>';
 $string['unenrolmessagedefault'] = 'Wie wurden von {$a->fullname} ({$a->url}) abgemeldet';
 

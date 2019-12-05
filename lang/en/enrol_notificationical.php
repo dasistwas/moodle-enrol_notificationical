@@ -87,7 +87,7 @@ $string['enrolupdatemessage_help'] = 'Personalize the message that users will co
 {FIRSTNAME} = firstname
 {LASTNAME} = lastname
 {URL} = course url
-{STARTTIME} = course start
-{ENDTIME} = course end
+{STARTTIME} = course start time
+{ENDTIME} = course end time
 </pre>';
 $string['enrolupdatemessagedefault'] = 'Your enrolment to {$a->fullname} has been updated ({$a->url})';
